@@ -1,11 +1,13 @@
 import { fileURLToPath } from 'node:url';
+import { ReplayProvider } from './replay.js';
 import { Tape } from './tape.js';
 
 export * from './schema.js';
 export * from './tape.js';
+export * from './replay.js';
 
 /**
- * Demo function demonstrating tape recording, validation, and JSON export.
+ * Demo function demonstrating tape recording, validation, JSON export, and offline replay.
  */
 export function runDemo(): void {
   const tape = Tape.create({
@@ -74,6 +76,30 @@ export function runDemo(): void {
       finishReason: 'stop',
     },
   });
+
+  // Replay the recorded tape fully offline to prove deterministic playback.
+  const replay = new ReplayProvider(tape);
+  const firstTurn = replay.step({
+    messages: [{ role: 'user', content: 'What is the weather in Seattle?' }],
+    model: 'gpt-4o',
+  });
+  const secondTurn = replay.step({
+    messages: [
+      { role: 'user', content: 'What is the weather in Seattle?' },
+      { role: 'assistant', toolCalls: firstTurn.message.toolCalls },
+      {
+        role: 'tool',
+        toolCallId: 'call_1',
+        name: 'get_weather',
+        content: JSON.stringify({ temperature: 18, condition: 'Partly Cloudy' }),
+      },
+    ],
+    model: 'gpt-4o',
+  });
+  replay.assertExhausted();
+  if (secondTurn.message.content !== 'The weather in Seattle is currently 18°C and partly cloudy.') {
+    throw new Error('Replayed tape did not reproduce the recorded demo output.');
+  }
 
   process.stdout.write(`AgentTape demo executed successfully.\n`);
   process.stdout.write(`Recorded tape: "${tape.metadata.name}" with ${tape.length} steps.\n`);
