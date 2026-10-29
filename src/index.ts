@@ -5,6 +5,7 @@ import { Tape } from './tape.js';
 export * from './schema.js';
 export * from './tape.js';
 export * from './replay.js';
+export * from './assert.js';
 
 /**
  * Demo function demonstrating tape recording, validation, JSON export, and offline replay.
