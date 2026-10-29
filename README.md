@@ -202,9 +202,15 @@ npm test
 <!-- builder:roadmap:start -->
 ## Status
 
-**In active development:** 0 of 1 milestones done.
+**Complete.** AgentTape is a deterministic record-and-replay test harness for LLM agent loops and tool-calling workflows. It captures multi-turn sessions into compact JSON tape fixtures via Zod schemas and replays them fully offline with exact/fuzzy argument matching and clear diff errors on mismatches. The Vitest suite runs with zero API keys, featuring 28 passing tests including a 3-step weather-and-calculator agent loop demo.
 
 ## Roadmap
 
-- [ ] **Tape engine, replay provider, and agent assertion suite**: Ship the tape recording middleware, offline playback provider with fuzzy or exact argument matching, serialization schema via Zod, and executable unit tests demonstrating a 3-step weather-and-calculator agent loop.
+- [x] **Tape engine, replay provider, and agent assertion suite**: Ship the tape recording middleware, offline playback provider with fuzzy or exact argument matching, serialization schema via Zod, and executable unit tests demonstrating a 3-step weather-and-calculator agent loop.
+
+## Ideas for future work
+
+- Add streaming token-level replay assertions for partial output matching
+- Publish example tape fixtures for popular agent frameworks (LangChain, CrewAI)
+- Add npm publish workflow and CI status badge to README
 <!-- builder:roadmap:end -->
